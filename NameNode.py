@@ -60,38 +60,16 @@ class NameNode(threading.Thread):
         offset = globalvar.read_offset
         count = globalvar.read_count
 
-        # block_to_read_start = offset / globalvar.CHUNK_SIZE
-        # block_to_read_end = offset + count / globalvar.CHUNK_SIZE
-        # block_read_config = []
-        # for i in range(block_to_read_start,block_to_read_end + 1):
-        #     if i == block_to_read_start :
-                
-        #     else:
-        #         if i == block_to_read_end:
-                
-        #         else:
-                    
-        #             start
-
-
         if file_id < 0 or file_id > self.last_file_id:
             print("No such file")
             globalvar.flag = False
             return
 
-        #block_id = int(math.floor(offset / CHUNK_SIZE))
         block_id_start = int(math.floor(offset / CHUNK_SIZE))
         block_id_end = int(math.floor((offset + count) /CHUNK_SIZE ))
-        #print(block_id_start,block_id_end)
-        #start = offset - block_id * CHUNK_SIZE
         
         block_to_be_read = ["%d-part-%d"%(file_id,block_id) for block_id in range(block_id_start,block_id_end + 1)]
-        #print(block_to_be_read)
-        #count = globalvar.read_count
-
-        #readed = 0
         globalvar.read_block_config.clear()
-        # globalvar.read_block_config = {}
 
 
         for i in range(block_id_start,block_id_end + 1):
@@ -109,9 +87,6 @@ class NameNode(threading.Thread):
             
             globalvar.read_block_config["%d-part-%d"%(file_id,i)] = (start,size)
         
-        
-        #server_id = random.choice(self.block_server_map[block_to_be_read])
-        #print(server_id)
         globalvar.read_server_block_map.clear()
 
         for block in block_to_be_read:
@@ -120,10 +95,6 @@ class NameNode(threading.Thread):
                 globalvar.read_server_block_map[server_id] = []
             globalvar.read_server_block_map[server_id].append(block)
 
-        #print(globalvar.read_server_block_map)
-        
-        #globalvar.read_block_config[block_to_be_read] = (start,count)
-        
         for event in globalvar.name2data_events:
             event.set()
 
@@ -134,9 +105,6 @@ class NameNode(threading.Thread):
             event.clear()
         
         globalvar.name2main_event.set()
-        
-        #globalvar.name2main_event.set()
-        #print(globalvar.read_results)
         
     def assign_fetch(self):
         file_id = globalvar.fetch_file_id
@@ -155,8 +123,6 @@ class NameNode(threading.Thread):
         for event in globalvar.name2data_events:
             event.set()
 
-        # for event in globalvar.data2name_events:
-        #     event.clear()
 
         for event in globalvar.name2data_events:
             event.set()
@@ -168,12 +134,6 @@ class NameNode(threading.Thread):
             event.clear()
 
         globalvar.name2main_event.set()
-        #globalvar.name2main_event.set()
-        # for mainevent in globalvar.mainevents:
-        #     mainevent.wait()
-        # with open(file_path,"w") as f_out:
-        #     for block in self.id_block_map[file_id]:
-        #         f_out.write(globalvar.fetch_results[block])
 
     def assign_upload(self):
         filepath = globalvar.upload_file
@@ -181,14 +141,8 @@ class NameNode(threading.Thread):
         name = os.path.split(filepath)[1]
         
         last_file_id = self.last_file_id + 1
-        #self.last_file_id += 1
-
-        #更新info
-        #self.file_info.append((self.last_file_id,name,size))
-        #print(self.file_info)
         num_of_blocks = int(math.ceil(float(size) / CHUNK_SIZE))
         
-        #self.id_block_map[self.last_file_id] = []
         id_block_map = []
         for i in range(num_of_blocks):
             #self.id_block_map[self.last_file_id].append("%d-part-%d"%(self.last_file_id,i))
@@ -197,16 +151,12 @@ class NameNode(threading.Thread):
         globalvar.upload_server_block_map = {}
 
         # block_server_map记录每个块存在哪个服务器上
-
-        #for count,block in enumerate(self.id_block_map[self.last_file_id]):
         server_id = self.last_server_id 
         block_server_map = {}
         for count,block in enumerate(id_block_map):
             block_server_map[block] = []
             for i in range(NUM_OF_REPLICAS):
                 server_id = (server_id + 1) % NUM_OF_DATASERVERS
-                #server_id = (self.last_server_id + i) % globalvar.NUM_OF_DATASERVERS
-                #self.block_server_map[block].append((self.last_server_id + i) % NUM_OF_DATASERVERS)
                 block_server_map[block].append(server_id)
                 #server_block_map 记录datanode server需要存哪些block
 
@@ -258,5 +208,3 @@ class NameNode(threading.Thread):
             if globalvar.OPERATION == globalvar.OPERATIONS["quit"]:
                 self.quit_clear()
             
-            
-            #globalvar.name2main_event.set()  

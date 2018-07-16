@@ -77,35 +77,16 @@ def parse_cmds(cmds):
 
 def get_results():
     if globalvar.OPERATION == OPERATIONS["read"]:
-        #num_of_blocks = len(globalvar.read_results)
-        #print(num_of_blocks)
-        #file_id = globalvar.read_file_id
         data = bytes()
-        #print(globalvar.read_results)
         results = globalvar.read_results
-        #print(results)
-        #data = bytearray()
-        # globalvar.read_results.clear()
         blocks = list(results.keys())
         blocks.sort()
         for block in blocks:
             data_i = results[block]
-            # try:
-            #     data = data.decode(encoding = "utf-8")
-            # except UnicodeDecodeError :
-            #     #print(len(data))
-            #     pass
             data = data+data_i
-        #print(data,end = "")
-        #print('\n')
         print(data)
-            
-        #print(globalvar.fetch_results)
 
     elif globalvar.OPERATION == OPERATIONS["fetch"]:
-        #
-        # num_of_blocks = len(globalvar.fetch_results)
-        # file_id = globalvar.fetch_file_id
         results = globalvar.fetch_results
         with open(globalvar.fetch_save_file,"wb") as f_out:
             for block in results:
@@ -122,8 +103,6 @@ def get_results():
             pass
     
 def run():
-    # if not os.path.exists("./dfs"):
-    #     os.makedirs("./dfs")
     name_server = NameNode.NameNode('NameServer')
     name_server.start()
 
@@ -142,23 +121,11 @@ def run():
         print(cmd_prompt,end = "")
         cmd = input()
         if not parse_cmds(cmd):
-            #print(usages)
             continue
         globalvar.main2name_event.set()
-
         globalvar.name2main_event.wait()
-
         globalvar.name2main_event.clear()
-
-        # if globalvar.NameNode_Flag:
-        #     continue
-
         get_results()
-
-        
-        
-        # if globalvar.OPERATION == OPERATIONS["quit"]:
-        #     os._exit(0)
 
 if __name__ == "__main__":
     run()
