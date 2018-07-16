@@ -3,8 +3,11 @@ This is a python3 implemented mini distributed file system, we used threads to m
 
 ## Baisc Functions
 upload: upload a file to dfs
+
 fetch: download a file from dfs to local
+
 read: read the content of a file in dfs
+
 ls: list all the files in dfs
 
 ## Main Feature:
