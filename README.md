@@ -26,3 +26,5 @@ We use a globalvar module to share information between DataServers and NameServe
 	Mini-DFS >> fetch file_id save_path
 ### read 
 	Mini-DFS >> read file_id offset cout
+### quit
+    Mini-DFS >> quit
